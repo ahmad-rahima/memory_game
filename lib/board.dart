@@ -1,14 +1,21 @@
-import 'dart:io';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:memory_game/board_card.dart';
 import 'package:memory_game/data/images.dart';
 
 class Board extends StatefulWidget {
-  Board({super.key});
+  Board({
+    super.key,
+    required this.incrementScore,
+    required this.startTimer,
+    required this.stopTimer,
+  });
 
   @override
   State<Board> createState() => _BoardState();
+
+  void Function() startTimer;
+  void Function() stopTimer;
+  void Function() incrementScore;
 }
 
 class _BoardState extends State<Board> {
@@ -16,6 +23,7 @@ class _BoardState extends State<Board> {
   List<int> activeCards = [];
   List<String> openCards = [];
   final cardsNo = 4;
+  bool userStarted = false;
 
   @override
   void initState() {
@@ -25,6 +33,37 @@ class _BoardState extends State<Board> {
     cards = cards.sublist(0, 4);
     cards = [...cards, ...cards];
     cards.shuffle();
+  }
+
+  void openCard(int idx) {
+    if (!userStarted) widget.startTimer();
+    userStarted = true;
+
+    setState(() {
+      activeCards.add(idx);
+      if (activeCards.length == 2) {
+        String fstCard = cards[activeCards[0]];
+        String sndCard = cards[activeCards[1]];
+        if (fstCard.compareTo(sndCard) == 0) {
+          openCards.add(fstCard);
+          widget.incrementScore();
+          if (openCards.length == 4) widget.stopTimer();
+        }
+        Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            setState(() {
+              activeCards.removeAt(0);
+              activeCards.removeAt(0);
+            });
+          },
+        );
+      }
+    });
+  }
+
+  bool isCardOpen(int idx, String name) {
+    return activeCards.contains(idx) || openCards.contains(name);
   }
 
   @override
@@ -38,58 +77,15 @@ class _BoardState extends State<Board> {
             mainAxisSpacing: 48,
             crossAxisSpacing: 48,
             crossAxisCount: 4,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
             children: [
               for (final (idx, card) in cards.indexed)
-                InkWell(
-                  onTap: () {
-                    print("Press me harder! $idx");
-
-                    setState(() {
-                      activeCards.add(idx);
-                      if (activeCards.length == 2) {
-                        String fstCard = cards[activeCards[0]];
-                        String secCard = cards[activeCards[1]];
-                        if (fstCard.compareTo(secCard) == 0) {
-                          openCards.add(fstCard);
-                          print("OpenCards: $openCards");
-                        }
-                        var future = Future.delayed(
-                          const Duration(seconds: 1),
-                          () {
-                            setState(() {
-                              activeCards.clear();
-                            });
-                          },
-                        );
-                      }
-                    });
-                  },
-                  child: Ink(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      border: const Border(
-                        left: BorderSide(color: Colors.blue, width: 4),
-                        right: BorderSide(color: Colors.blue, width: 4),
-                        top: BorderSide(color: Colors.blue, width: 4),
-                        bottom: BorderSide(color: Colors.blue, width: 4),
-                      ),
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.deepPurple.shade400,
-                          Colors.deepPurple.shade900,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Image.asset(
-                      activeCards.indexOf(idx) > -1 ||
-                              openCards.indexOf(card) > -1
-                          ? "assets/images/$card"
-                          : "assets/images/question.png",
-                    ),
-                  ),
+                BoardCard(
+                  idx,
+                  card,
+                  open: openCard,
+                  isOpen: isCardOpen,
                 ),
             ],
           ),
