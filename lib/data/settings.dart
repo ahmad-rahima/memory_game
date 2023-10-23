@@ -1,0 +1,1 @@
+var assetsPath = "assets/images";

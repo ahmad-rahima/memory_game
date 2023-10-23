@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memory_game/board.dart';
 import 'package:memory_game/game.dart';
 
 void main() {
@@ -7,6 +8,7 @@ void main() {
       // appBar: AppBar(
       //   title: const Text("Game Bar"),
       // ),
+      backgroundColor: Colors.purple,
       body: Game(),
     ),
   ));
