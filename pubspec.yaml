@@ -76,6 +76,8 @@ flutter:
     - assets/images/raspberry.png
     - assets/images/strawberry.png
     - assets/images/tomato.png
+    - assets/images/sunflower.png
+    - assets/images/flower-bouquet.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

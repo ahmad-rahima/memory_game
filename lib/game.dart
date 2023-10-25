@@ -1,13 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:memory_game/board.dart';
 
 class Game extends StatefulWidget {
-  const Game({super.key});
+  const Game({super.key, required this.cardsNo});
 
   @override
   State<Game> createState() => _GameState();
+
+  final int cardsNo;
 }
 
 class _GameState extends State<Game> {
@@ -46,14 +47,14 @@ class _GameState extends State<Game> {
     }
   }
 
+  void incScore() {
+    setState(() {
+      ++score;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    void incScore() {
-      setState(() {
-        ++score;
-      });
-    }
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -70,6 +71,7 @@ class _GameState extends State<Game> {
           incrementScore: incScore,
           startTimer: startTimer,
           stopTimer: stopTimer,
+          cardsNo: widget.cardsNo,
         ),
       ],
     );

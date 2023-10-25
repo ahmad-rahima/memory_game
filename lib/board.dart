@@ -8,6 +8,7 @@ class Board extends StatefulWidget {
     required this.incrementScore,
     required this.startTimer,
     required this.stopTimer,
+    required this.cardsNo,
   });
 
   @override
@@ -16,13 +17,13 @@ class Board extends StatefulWidget {
   void Function() startTimer;
   void Function() stopTimer;
   void Function() incrementScore;
+  final int cardsNo;
 }
 
 class _BoardState extends State<Board> {
   List<String> cards = [];
   List<int> activeCards = [];
   List<String> openCards = [];
-  final cardsNo = 4;
   bool userStarted = false;
 
   @override
@@ -30,7 +31,7 @@ class _BoardState extends State<Board> {
     super.initState();
     cards = [...cardOpenImages];
     cards.shuffle();
-    cards = cards.sublist(0, 4);
+    cards = cards.sublist(0, widget.cardsNo);
     cards = [...cards, ...cards];
     cards.shuffle();
   }
@@ -47,7 +48,7 @@ class _BoardState extends State<Board> {
         if (fstCard.compareTo(sndCard) == 0) {
           openCards.add(fstCard);
           widget.incrementScore();
-          if (openCards.length == 4) widget.stopTimer();
+          if (openCards.length == widget.cardsNo) widget.stopTimer();
         }
         Future.delayed(
           const Duration(seconds: 1),
@@ -71,23 +72,28 @@ class _BoardState extends State<Board> {
     return Container(
       margin: const EdgeInsets.all(48),
       child: Center(
-        child: SizedBox(
-          width: 800,
-          child: GridView.count(
-            mainAxisSpacing: 48,
-            crossAxisSpacing: 48,
-            crossAxisCount: 4,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            children: [
-              for (final (idx, card) in cards.indexed)
-                BoardCard(
-                  idx,
-                  card,
-                  open: openCard,
-                  isOpen: isCardOpen,
-                ),
-            ],
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: 500,
+            width: 800,
+            child: Scrollbar(
+              child: GridView.count(
+                mainAxisSpacing: 48,
+                crossAxisSpacing: 48,
+                crossAxisCount: 4,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: [
+                  for (final (idx, card) in cards.indexed)
+                    BoardCard(
+                      idx,
+                      card,
+                      open: openCard,
+                      isOpen: isCardOpen,
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:memory_game/board.dart';
 import 'package:memory_game/game.dart';
+import 'package:memory_game/game_menu.dart';
+import 'package:memory_game/memory_game.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -8,8 +10,8 @@ void main() {
       // appBar: AppBar(
       //   title: const Text("Game Bar"),
       // ),
-      backgroundColor: Colors.purple,
-      body: Game(),
+      backgroundColor: Colors.indigoAccent,
+      body: MemoryGame(),
     ),
   ));
 }

@@ -14,6 +14,8 @@ List<String> cardOpenImages = [
   "raspberry.png",
   "strawberry.png",
   "tomato.png",
+  "sunflower.png",
+  "flower-bouquet.png",
 ];
 
 String cardClosedImage = "question.png";
